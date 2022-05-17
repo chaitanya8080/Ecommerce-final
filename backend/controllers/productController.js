@@ -44,7 +44,7 @@ exports.getProductDetails = async (req,res,next)=>{
       })
 
   } catch (error) {
-    res.status(401).json({message: err})
+    res.status(401).json({message: error.message})
   }
 }
 

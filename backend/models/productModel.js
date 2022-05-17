@@ -1,4 +1,4 @@
-const { url } = require("inspector");
+
 const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({

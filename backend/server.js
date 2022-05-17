@@ -11,8 +11,12 @@ dotenv.config({path:"backend/config/config.env"})
 
 connectDatabase();
 
-app.listen(process.env.PORT, ()=>{
-    console.log(`server working on  http://localhost:${process.env.PORT}`)
+app.listen(process.env.PORT,()=>{
+    try {
+        console.log(`server working on  http://localhost:${process.env.PORT}`)
+    } catch (error) {
+        console.log(error.message)
+    }
 })
 
 
