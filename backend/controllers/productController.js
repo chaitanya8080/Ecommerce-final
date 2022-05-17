@@ -1,5 +1,7 @@
 
+const { query } = require("express");
 const Product = require("../models/productModel");
+const ApiFeatures = require("../utils/apifeatures");
 
 
 
@@ -16,15 +18,25 @@ exports.createProduct = async (req,res,next)=>{
 }
 
   //get all products
+
+  
 exports.getAllProducts = async (req,res,next)=>{
     try {
-       const products = await Product.find();
+
+      const resultPerPage = 5;
+      const productCount = await Product.countDocuments();
+      const apiFeatures = new ApiFeatures(Product.find(), req.query)
+      .search()
+      .filter().pagination(resultPerPage);
+       const products = await apiFeatures.query;
        res.status(200).json({message:"product getting is working fine",products})
     } catch (err) {
         res.status(401).json({message: err})
     }
      
 }
+
+
 //get single product
 
 
@@ -40,7 +52,8 @@ exports.getProductDetails = async (req,res,next)=>{
       }
       res.status(200).json({
         success:true,
-        product
+        product,
+        productCount,
       })
 
   } catch (error) {
