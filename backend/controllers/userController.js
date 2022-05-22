@@ -1,7 +1,7 @@
 
 
 const User = require("../models/userModel");
-
+const sendToken = require("../utils/sendToke.js");
 
 //Register user
 
@@ -17,13 +17,37 @@ exports.registerUser = async (req,res,next)=>{
             }
         })
 
-        const token = user.getJWTToken();
-
-        res.status(201).json({
-            success:true,
-            user,
-        })
+        sendToken(user,201,res)
+      
     } catch (error) {
-        res.status(401).json({error: error.message})
+        res.status(201).json({error: error.message})
     }
+}
+
+
+exports.loginUser = async (req,res,next) =>{
+    try {
+        const {email, password} = req.body;
+        if(!email || !password){
+            return next(res.status(401).json({message:"please enter email,password"}));
+
+        }
+        const user = await User.findOne({email}).select("+password")
+         
+        if(!user){
+            return next(res.status(401).json({message:"please enter email,password"}))
+        }
+
+        const isPasswordMatched = user.comparePassword(password)
+
+        if(!isPasswordMatched){
+            return next(res.status(401).json({message:"please enter email,password"}))
+        }
+
+        sendToken(user,200,res);  
+    } catch (error) {
+        res.status(401).json({message:"invalid email , password"})
+    }
+
+    
 }
