@@ -46,8 +46,24 @@ exports.loginUser = async (req,res,next) =>{
 
         sendToken(user,200,res);  
     } catch (error) {
-        res.status(401).json({message:"invalid email , password"})
+       return res.status(401).json({message:"invalid email , password"})
     }
 
     
+}
+
+exports.logoutUser = async (req, res, next)=>{
+   try {
+       res.cookie("token",null, {
+           expires: new Date(Date.now()),
+           httpOnly: true,
+       })
+
+       res.status(200).json({
+           success:true,
+           message:"Logged out successfully"
+       })
+   } catch (error) {
+      return res.status(201).json({message:"Please login"})
+   }
 }
