@@ -1,14 +1,17 @@
 
 
 const nodeMailer = require("nodemailer");
-const { options } = require("nodemon/lib/config");
+// const { options } = require("nodemon/lib/config");
 
-const sendEmail = async(option)=>{
+// process.dotenv.config({path:"backend/config/config.env"})
+const sendEmail = async(options)=>{
     const transporter = nodeMailer.createTransport({
-        service :"gmail",
+        host:process.env.SMPT_HOST,
+        port:process.env.SMPT_PORT,
+        service :process.env.SERVICE,
         auth:{
             user:process.env.SMPT_MAIL,
-            password:process.env.SMPT_PASSWORD,
+            pass:process.env.SMPT_PASSWORD,
         }
     })
 
@@ -21,4 +24,4 @@ const sendEmail = async(option)=>{
    await transporter.sendMail(mailOptions);
 }
 
-module.export = sendEmail;
+module.exports = sendEmail;

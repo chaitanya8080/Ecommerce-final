@@ -109,3 +109,32 @@ exports.forgotPassword = async(req,res,next)=>{
         return next(res.status(500).json({message :error.message}))
     }
 }
+
+exports.resetPassword = async (req,res,next)=>{
+    
+
+    //creating token hash
+    const  resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+
+    const user = await user.findOne({resetPasswordToken, 
+        resetPasswordExpire : { $gt : Date.now()},
+ })
+
+ if(!user){
+     return next(res.status(400).json({message:"reset password token is invalid"}))
+ }
+
+ if(req.body.password !== req.body.confirmPassword){
+     return next(res.status(400).json({message:"password doesnt matched"}))
+ }
+
+ user.password = req.body.password;
+ user.resetPasswordToken = undefined;
+ user.resetPasswordExpire = undefined;
+
+  await user.save();
+  sendToken(user,200,res);
+}
